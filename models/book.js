@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 const path = require('path')
-
-
-
 const coverImageBasePath = 'uploads/bookCovers'
 
 const bookSchema = new mongoose.Schema({

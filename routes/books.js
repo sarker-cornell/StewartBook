@@ -3,11 +3,12 @@ const router = express.Router()
 const Book = require('../models/book')
 const Author = require('../models/author')
 
+const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const uploadPath = path.join('public', Book.coverImageBasePath)
-const multer = require('multer')
-const imageMimeTypes = ['images/jpeg','images/png','images/gif']
+
+const imageMimeTypes = ['image/jpeg','image/png','image/gif']
 const upload = multer({
     dest: uploadPath,
     fileFilter: (req, file, callback) => {
@@ -61,7 +62,7 @@ router.get('/new', async (req,res) =>{
 // Create Book Route
 router.post('/', upload.single('cover'), async (req,res) =>{
     //res.send('Create books')
-    const fileName = req.file != null? req.file.filename:null
+    const fileName = req.file != null ? req.file.filename:null
     const book = new Book({
         title: req.body.title,
         author:req.body.author,
@@ -70,14 +71,17 @@ router.post('/', upload.single('cover'), async (req,res) =>{
         description: req.body.description,
         coverImageName: fileName
     })
-
+    //console.log(req)
+    console.log()
     try {
         const newBook = await book.save()
-        res.redirect('books')
+        console.log("Book saved")
+        res.redirect(`books`)
     } catch {
         if (book.coverImageName !=null) {
             removeBookCover(book.coverImageName)
         }
+        console.log("Book Not saved")
         renderNewPage(res, book, true)        
     }
 
